@@ -10,10 +10,14 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    var stackViews = [StackView]()
     var dynamicAnimator: UIDynamicAnimator!
     var gravityBehavior: UIGravityBehavior!
+    var snap: UISnapBehavior?
     var isDragging = false
     var previousPosition: CGPoint?
+    var isViewSnapped = false
+    
     
     let backgroundImageView: UIImageView = {
         let view = UIImageView()
@@ -80,6 +84,7 @@ class ViewController: UIViewController {
         //collision behavior
         let collisionBehavior = UICollisionBehavior(items: [stackView])
         
+        //lower boundary
         let boundaryY = stackView.frame.origin.y + stackView.frame.height
         let boundaryStart = CGPoint(x: 0, y: boundaryY)
         let boundaryEnd = CGPoint(x: stackView.frame.width, y: boundaryY)
@@ -87,6 +92,8 @@ class ViewController: UIViewController {
         dynamicAnimator.addBehavior(collisionBehavior)
         
         gravityBehavior.addItem(stackView)
+        
+        stackViews.append(stackView)
     }
 
     func setupDynamicAnimator() {
@@ -102,23 +109,79 @@ class ViewController: UIViewController {
         
         let currentPosition = panRecognizer.location(in: self.view)
         
-        let dragView = panRecognizer.view
-        
-        if panRecognizer.state == .began {
-            let isTouchNearTop = panRecognizer.location(in: dragView).y < 150
-            
-            if isTouchNearTop {
-                isDragging = true
+        if let dragView = panRecognizer.view {
+            if panRecognizer.state == .began {
+                let isTouchNearTop = panRecognizer.location(in: dragView).y < 150
+                
+                if isTouchNearTop {
+                    isDragging = true
+                    previousPosition = currentPosition
+                }
+            } else if panRecognizer.state == .changed && isDragging {
+                if let previousPosition = previousPosition {
+                    let offset = previousPosition.y - currentPosition.y
+                    dragView.center = CGPoint(x: dragView.center.x, y: dragView.center.y - offset)
+                }
                 previousPosition = currentPosition
+            } else if panRecognizer.state == .ended && isDragging {
+                
+                snap(dragView: dragView)
+                
+                //Applies behavior to the dynamic item again. Makes it adhere to gravity etc.
+                dynamicAnimator.updateItem(usingCurrentState: dragView)
+                
+                isDragging = false
             }
-        } else if panRecognizer.state == .changed && isDragging {
-            
-            let offset = (previousPosition?.y)! - currentPosition.y
-            dragView?.center = CGPoint(x: (dragView?.center.x)!, y: (dragView?.center.y)! - offset)
-            previousPosition = currentPosition
-            
-        } else if panRecognizer.state == .ended {
-            print("pan ended")
+        }
+    }
+    
+    func snap(dragView: UIView) {
+        
+        let viewHasNearedSnapPosition = dragView.frame.origin.y < 130
+        
+        if viewHasNearedSnapPosition {
+            if !isViewSnapped {
+                var snapPosition = view.center
+                snapPosition.y += 120
+                
+                snap = UISnapBehavior(item: dragView, snapTo: snapPosition)
+                dynamicAnimator.addBehavior(snap!)
+                
+                changeStackViewAlpha(currentView: dragView)
+                
+                isViewSnapped = true
+            }
+        } else {
+            if isViewSnapped {
+                dynamicAnimator.removeBehavior(snap!)
+                changeStackViewAlpha(currentView: dragView)
+                isViewSnapped = false
+            }
+        }
+    }
+    
+    func changeStackViewAlpha(currentView: UIView) {
+        
+        if isViewSnapped {
+            for stackView in stackViews {
+                if stackView == currentView {
+                    UIView.animate(withDuration: 0.5, animations: {
+                        stackView.textView.alpha = 0
+                    })
+                }
+                stackView.alpha = 1
+            }
+        } else {
+            for stackView in stackViews {
+                if stackView != currentView {
+                    stackView.alpha = 0
+                } else {
+                    UIView.animate(withDuration: 0.5, animations: {
+                        stackView.textView.alpha = 1
+                    })
+                }
+                
+            }
         }
     }
 

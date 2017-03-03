@@ -72,7 +72,7 @@ class StackView: UIView {
         addConstraints(withFormat: "H:|-16-[v0]-16-|", toViews: [textView])
         addConstraints(withFormat: "V:|-16-[v0(30)]-8-[v1(350)]", toViews: [titleLabel, textView])
         
-        textView.isHidden = true
+        textView.alpha = 0
         
     }
     
