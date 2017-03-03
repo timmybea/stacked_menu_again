@@ -40,6 +40,10 @@ struct FontManager {
     static func headerFont() -> UIFont {
         return UIFont(name: "HiraginoSans-W6", size: 30)!
     }
+    
+    static func menuHeader() -> UIFont {
+        return UIFont(name: "HiraginoSans-W6", size: 24)!
+    }
 }
 
 struct PlaceHolderText {

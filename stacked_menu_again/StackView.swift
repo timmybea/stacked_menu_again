@@ -10,31 +10,40 @@ import UIKit
 
 class StackView: UIView {
 
+    var title: String? {
+        didSet {
+            titleLabel.text = title
+        }
+    }
+    
+    var body: String? {
+        didSet {
+            textView.text = body
+        }
+    }
+    
     let titleLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = UIColor.clear
         label.textColor = UIColor.white
-        label.text = "Creme Brulle"
         label.textAlignment = .center
-        label.font = FontManager.headerFont()
+        label.font = FontManager.menuHeader()
         return label
     }()
     
     let textView: UITextView = {
         let view = UITextView()
-        view.backgroundColor = UIColor.white
-        view.textColor = UIColor.blue
-        view.text = PlaceHolderText.textViewText()
-        view.font = UIFont.systemFont(ofSize: 16)
+        view.backgroundColor = UIColor.clear
+        view.textColor = UIColor.white
+        view.font = UIFont.systemFont(ofSize: 18)
         view.textAlignment = .justified
         return view
     }()
     
-    init(with superView: CGRect) {
-        super.init(frame: superView)
+    init(with superView: UIView) {
+        super.init(frame: superView.bounds)
         
-        self.backgroundColor = ColorManager.customStackViewBlue()
-        
+        setupLayer()
         setupSubviews()
         
     }
@@ -43,13 +52,27 @@ class StackView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func setupLayer() {
+        
+        backgroundColor = ColorManager.customStackViewBlue()
+        layer.cornerRadius = 8
+        
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 2, height: 2)
+        layer.shadowOpacity = 0.5
+        layer.shadowRadius = 3
+        
+    }
+    
     func setupSubviews() {
         addSubview(titleLabel)
         addSubview(textView)
         
         addConstraints(withFormat: "H:|[v0]|", toViews: [titleLabel])
         addConstraints(withFormat: "H:|-16-[v0]-16-|", toViews: [textView])
-        addConstraints(withFormat: "V:|-30-[v0(30)-8-[v1(350)]", toViews: [titleLabel, textView])
+        addConstraints(withFormat: "V:|-16-[v0(30)]-8-[v1(350)]", toViews: [titleLabel, textView])
+        
+        textView.isHidden = true
         
     }
     

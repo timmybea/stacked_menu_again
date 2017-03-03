@@ -13,6 +13,7 @@
 		B0A592E91E68FB2000379A24 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0A592E71E68FB2000379A24 /* LaunchScreen.storyboard */; };
 		B0A592F11E68FD5300379A24 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A592F01E68FD5300379A24 /* Helpers.swift */; };
 		B0A592F31E6903E200379A24 /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A592F21E6903E200379A24 /* StackView.swift */; };
+		B0A592F91E69E08E00379A24 /* RecipeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A592F81E69E08E00379A24 /* RecipeData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		B0A592EA1E68FB2000379A24 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0A592F01E68FD5300379A24 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		B0A592F21E6903E200379A24 /* StackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackView.swift; sourceTree = "<group>"; };
+		B0A592F81E69E08E00379A24 /* RecipeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				B0A592E01E68FB2000379A24 /* ViewController.swift */,
+				B0A592F81E69E08E00379A24 /* RecipeData.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -173,6 +176,7 @@
 			files = (
 				B0A592E11E68FB2000379A24 /* ViewController.swift in Sources */,
 				B0A592F11E68FD5300379A24 /* Helpers.swift in Sources */,
+				B0A592F91E69E08E00379A24 /* RecipeData.swift in Sources */,
 				B0A592DF1E68FB2000379A24 /* AppDelegate.swift in Sources */,
 				B0A592F31E6903E200379A24 /* StackView.swift in Sources */,
 			);

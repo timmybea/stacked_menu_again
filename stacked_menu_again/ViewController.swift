@@ -10,7 +10,10 @@ import UIKit
 
 class ViewController: UIViewController {
 
-
+    var dynamicAnimator: UIDynamicAnimator!
+    var gravityBehavior: UIGravityBehavior!
+    var isDragging = false
+    var previousPosition: CGPoint?
     
     let backgroundImageView: UIImageView = {
         let view = UIImageView()
@@ -33,9 +36,16 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         setupBackgroundViews()
+        setupDynamicAnimator()
         
-        let offset = 250
-        addMenuViews(with: offset)
+        var offset: CGFloat = 300
+        let recipes = RecipeData.getRecipes()
+        
+        for recipe in recipes {
+            addMenuViews(with: offset, recipe: recipe)
+            offset -= 50
+        }
+        
     }
     
     func setupBackgroundViews() {
@@ -53,16 +63,64 @@ class ViewController: UIViewController {
         view.addConstraints(withFormat: "V:|-70-[v0(30)]", toViews: [titleLabel])
     }
     
-    func addMenuViews(with offset: Int)  {
+    func addMenuViews(with offset: CGFloat, recipe: Recipe)  {
         
+        let stackView = StackView(with: self.view)
+        stackView.title = recipe.title
+        stackView.body = recipe.body
         
+        stackView.frame = self.view.bounds.offsetBy(dx: 0, dy: self.view.bounds.size.height - offset)
         
-        var menuView = StackView(with: self.view.bounds)
-        //menuView.frame = CGRect(x: 20, y: 20, width: 200, height: 200)
-        view.addSubview(menuView)
-    
+        view.addSubview(stackView)
+        
+        //pan Gesture
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(panRecognizer:)))
+        stackView.addGestureRecognizer(panGesture)
+
+        //collision behavior
+        let collisionBehavior = UICollisionBehavior(items: [stackView])
+        
+        let boundaryY = stackView.frame.origin.y + stackView.frame.height
+        let boundaryStart = CGPoint(x: 0, y: boundaryY)
+        let boundaryEnd = CGPoint(x: stackView.frame.width, y: boundaryY)
+        collisionBehavior.addBoundary(withIdentifier: 1 as NSCopying, from: boundaryStart, to: boundaryEnd)
+        dynamicAnimator.addBehavior(collisionBehavior)
+        
+        gravityBehavior.addItem(stackView)
     }
 
+    func setupDynamicAnimator() {
+        
+        dynamicAnimator = UIDynamicAnimator(referenceView: self.view)
+        
+        gravityBehavior = UIGravityBehavior()
+        gravityBehavior.magnitude = 4
+        dynamicAnimator.addBehavior(gravityBehavior)
+    }
+    
+    func handlePan(panRecognizer: UIPanGestureRecognizer) {
+        
+        let currentPosition = panRecognizer.location(in: self.view)
+        
+        let dragView = panRecognizer.view
+        
+        if panRecognizer.state == .began {
+            let isTouchNearTop = panRecognizer.location(in: dragView).y < 150
+            
+            if isTouchNearTop {
+                isDragging = true
+                previousPosition = currentPosition
+            }
+        } else if panRecognizer.state == .changed && isDragging {
+            
+            let offset = (previousPosition?.y)! - currentPosition.y
+            dragView?.center = CGPoint(x: (dragView?.center.x)!, y: (dragView?.center.y)! - offset)
+            previousPosition = currentPosition
+            
+        } else if panRecognizer.state == .ended {
+            print("pan ended")
+        }
+    }
 
 }
 
