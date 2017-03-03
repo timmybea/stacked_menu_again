@@ -167,6 +167,7 @@ class ViewController: UIViewController {
                 if stackView == currentView {
                     UIView.animate(withDuration: 0.5, animations: {
                         stackView.textView.alpha = 0
+                        stackView.button.alpha = 0
                     })
                 }
                 stackView.alpha = 1
@@ -178,6 +179,7 @@ class ViewController: UIViewController {
                 } else {
                     UIView.animate(withDuration: 0.5, animations: {
                         stackView.textView.alpha = 1
+                        stackView.button.alpha = 1
                     })
                 }
                 

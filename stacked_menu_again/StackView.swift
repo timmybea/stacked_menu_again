@@ -40,6 +40,17 @@ class StackView: UIView {
         return view
     }()
     
+    let button: UIButton = {
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 55, height: 55))
+        button.setTitle("X", for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.backgroundColor = UIColor.red
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 30)
+        button.layer.cornerRadius = button.frame.width / 2
+        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        return button
+    }()
+    
     init(with superView: UIView) {
         super.init(frame: superView.bounds)
         
@@ -67,13 +78,19 @@ class StackView: UIView {
     func setupSubviews() {
         addSubview(titleLabel)
         addSubview(textView)
+        addSubview(button)
         
         addConstraints(withFormat: "H:|[v0]|", toViews: [titleLabel])
         addConstraints(withFormat: "H:|-16-[v0]-16-|", toViews: [textView])
-        addConstraints(withFormat: "V:|-16-[v0(30)]-8-[v1(350)]", toViews: [titleLabel, textView])
-        
-        textView.alpha = 0
-        
+        addConstraints(withFormat: "V:|-16-[v0(30)]-8-[v1(350)]-8-[v2(55)]", toViews: [titleLabel, textView, button])
+        button.widthAnchor.constraint(equalToConstant: 55).isActive = true
+        addConstraint(NSLayoutConstraint(item: self.button, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0))
+        button.alpha = 0
+        textView.alpha = 0        
+    }
+    
+    func buttonPressed() {
+        print("button pressed!!")
     }
     
 
